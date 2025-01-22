@@ -11,11 +11,8 @@ COPY src src
 # Build the application
 RUN mvn clean package -DskipTests
 
-# Print the contents of target directory to debug
-RUN ls -la target/
-
-# Find and rename the jar
-RUN cp target/mahjong-0.0.1-SNAPSHOT.jar app.jar
+# Copy the correct jar name
+RUN cp target/mahjong-game-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
