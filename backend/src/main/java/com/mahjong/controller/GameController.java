@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -61,5 +60,10 @@ public class GameController {
     public List<Tile> sortHand() {
         gameService.sortHand();
         return gameService.getCurrentHand();
+    }
+
+    @RequestMapping(value = "/health", method = RequestMethod.HEAD)
+    public ResponseEntity<?> healthCheck() {
+        return ResponseEntity.ok().build();
     }
 }
