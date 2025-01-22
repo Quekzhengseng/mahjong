@@ -3,8 +3,8 @@ FROM maven:3.9.5-eclipse-temurin-17-alpine
 WORKDIR /app
 
 # Copy backend files
-COPY backend/pom.xml pom.xml
-COPY backend/src src/
+COPY pom.xml pom.xml
+COPY src src/
 
 # Build and run directly
 RUN mvn clean package -DskipTests
