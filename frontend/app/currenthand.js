@@ -11,7 +11,9 @@ const CurrentHand = () => {
 
   const getHand = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/game/hand");
+      const response = await axios.get(
+        "https://mahjong-5ztb.onrender.com/api/game/hand"
+      );
       setHand(response.data);
       setIsLoading(false);
     } catch (error) {
@@ -23,7 +25,7 @@ const CurrentHand = () => {
   const getCombiSets = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/game/submitted-hand"
+        "https://mahjong-5ztb.onrender.com/api/game/submitted-hand"
       );
       setCombiSets(response.data);
     } catch (error) {
@@ -33,7 +35,9 @@ const CurrentHand = () => {
 
   const sortHand = async () => {
     try {
-      const response = await axios.post("http://localhost:8080/api/game/sort");
+      const response = await axios.post(
+        "https://mahjong-5ztb.onrender.com/api/game/sort"
+      );
       setHand(response.data);
     } catch (error) {
       console.error("Error sorting hand:", error);
@@ -42,7 +46,7 @@ const CurrentHand = () => {
 
   const drawTile = async () => {
     try {
-      await axios.post("http://localhost:8080/api/game/draw");
+      await axios.post("https://mahjong-5ztb.onrender.com/api/game/draw");
       await getHand();
     } catch (error) {
       console.error("Error drawing tile:", error);
@@ -51,7 +55,9 @@ const CurrentHand = () => {
 
   const discardTile = async (index) => {
     try {
-      await axios.post(`http://localhost:8080/api/game/discard/${index}`);
+      await axios.post(
+        `https://mahjong-5ztb.onrender.com/api/game/discard/${index}`
+      );
       await getHand();
       setSelectedTiles([]);
     } catch (error) {
@@ -69,7 +75,7 @@ const CurrentHand = () => {
 
     try {
       await axios.post(
-        "http://localhost:8080/api/game/combi-set",
+        "https://mahjong-5ztb.onrender.com/api/game/combi-set",
         selectedTiles
       );
       await getHand();
@@ -84,7 +90,7 @@ const CurrentHand = () => {
   const removeCombiSet = async (index) => {
     try {
       await axios.post(
-        `http://localhost:8080/api/game/combi-set/remove/${index}`
+        `https://mahjong-5ztb.onrender.com/api/game/combi-set/remove/${index}`
       );
       await getHand();
       await getCombiSets();
