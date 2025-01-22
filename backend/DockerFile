@@ -2,19 +2,10 @@ FROM maven:3.9.5-eclipse-temurin-17-alpine
 
 WORKDIR /app
 
-# Copy pom.xml first to cache dependencies
-COPY pom.xml .
+# Copy backend files
+COPY backend/pom.xml pom.xml
+COPY backend/src src/
 
-# Copy source code
-COPY src src
-
-# Build the application
+# Build and run directly
 RUN mvn clean package -DskipTests
-
-# Copy the correct jar name
-RUN cp target/mahjong-game-0.0.1-SNAPSHOT.jar app.jar
-
-EXPOSE 8080
-
-# Run the jar file
-CMD ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "target/mahjong-game-0.0.1-SNAPSHOT.jar"]
