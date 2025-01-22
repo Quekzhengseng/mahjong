@@ -11,6 +11,9 @@ COPY src src
 # Build the application
 RUN mvn clean package -DskipTests
 
+# Find the jar file name and store it in an environment variable
+RUN find target -name '*.jar' -exec cp {} app.jar \;
+
 EXPOSE 8080
 
 # Run the jar file
