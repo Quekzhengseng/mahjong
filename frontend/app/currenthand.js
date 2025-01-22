@@ -7,7 +7,7 @@ const CurrentHand = () => {
   const [combiSets, setCombiSets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
-  const [checkdiscard, setDiscard] = useState(false);
+  // const [checkdiscard, setDiscard] = useState(false);
 
   const getHand = async () => {
     try {
@@ -65,7 +65,7 @@ const CurrentHand = () => {
     }
   };
 
-  const checkDiscard = async () => {};
+  // const checkDiscard = async () => {};
 
   const submitCombiSet = async () => {
     if (selectedTiles.length !== 3) {
