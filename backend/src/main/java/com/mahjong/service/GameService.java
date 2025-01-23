@@ -11,7 +11,7 @@ public class GameService {
     private final List<Tile> currentHand;
     private final List<List<Tile>> submittedHand;
     private final List<Tile> specialHand;
-    private boolean checkDiscard ;
+    private boolean checkDiscard = true;
     
     private static final List<String> NORMAL_TILESETS = Arrays.asList("Bamboo", "Character", "Circle");
     private static final List<String> SPECIAL_TILESETS = Arrays.asList(

@@ -7,7 +7,7 @@ const CurrentHand = () => {
   const [combiSets, setCombiSets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
-  // const [checkdiscard, setDiscard] = useState(false);
+  const [checkdiscard, setDiscard] = useState(false);
 
   const getHand = async () => {
     try {
@@ -46,6 +46,14 @@ const CurrentHand = () => {
 
   const drawTile = async () => {
     try {
+      const response = await checkDiscard();
+      setDiscard(response);
+
+      if (!response.data) {
+        alert("You must discard a tile before drawing!");
+        return;
+      }
+
       await axios.post("https://mahjong-5ztb.onrender.com/api/game/draw");
       await getHand();
     } catch (error) {
@@ -55,6 +63,14 @@ const CurrentHand = () => {
 
   const discardTile = async (index) => {
     try {
+      const response = await checkDiscard();
+      setDiscard(response);
+
+      if (response.data) {
+        alert("You must draw a tile before discarding!");
+        return;
+      }
+
       await axios.post(
         `https://mahjong-5ztb.onrender.com/api/game/discard/${index}`
       );
@@ -65,7 +81,15 @@ const CurrentHand = () => {
     }
   };
 
-  // const checkDiscard = async () => {};
+  const checkDiscard = async () => {
+    try {
+      return axios.get(
+        "https://mahjong-5ztb.onrender.com/api/game/checkdiscard/"
+      );
+    } catch (error) {
+      console.error("Error retrieving discard boolean", error);
+    }
+  };
 
   const submitCombiSet = async () => {
     if (selectedTiles.length !== 3) {
@@ -129,7 +153,12 @@ const CurrentHand = () => {
           </button>
           <button
             onClick={drawTile}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+            disabled={!checkDiscard}
+            className={`px-4 py-2 ${
+              !checkDiscard
+                ? "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
           >
             Draw Tile
           </button>
@@ -137,12 +166,12 @@ const CurrentHand = () => {
             onClick={() =>
               selectedTiles.length === 1 && discardTile(selectedTiles[0])
             }
+            disabled={checkDiscard}
             className={`px-4 py-2 rounded ${
-              selectedTiles.length === 1
+              checkDiscard
                 ? "bg-red-500 hover:bg-red-600 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
-            disabled={selectedTiles.length !== 1}
           >
             Discard Selected
           </button>
