@@ -11,7 +11,7 @@ public class GameService {
     private final List<Tile> currentHand;
     private final List<List<Tile>> submittedHand;
     private final List<Tile> specialHand;
-    private boolean checkDiscard = true;
+    private boolean checkDiscard;
     
     private static final List<String> NORMAL_TILESETS = Arrays.asList("Bamboo", "Character", "Circle");
     private static final List<String> SPECIAL_TILESETS = Arrays.asList(
@@ -26,7 +26,7 @@ public class GameService {
         this.currentHand = new ArrayList<>();
         this.specialHand = new ArrayList<>();
         this.submittedHand = new ArrayList<>();
-        this.checkDiscard = true;
+        this.checkDiscard = false;
         initializeAllTiles();
     }
 
@@ -51,6 +51,8 @@ public class GameService {
         for (int i = 0; i < 13; i++) {
             drawTile();
         }
+
+        this.checkDiscard = true;
     }
 
     public Tile drawTile() {
