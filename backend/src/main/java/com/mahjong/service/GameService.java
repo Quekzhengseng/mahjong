@@ -12,6 +12,7 @@ public class GameService {
     private final List<List<Tile>> submittedHand;
     private final List<Tile> specialHand;
     private boolean checkDiscard;
+    private boolean gameStarted = false;
     
     private static final List<String> NORMAL_TILESETS = Arrays.asList("Bamboo", "Character", "Circle");
     private static final List<String> SPECIAL_TILESETS = Arrays.asList(
@@ -20,7 +21,7 @@ public class GameService {
     
     @Autowired
     private HandChecker handChecker;
-    private boolean gameStarted = false;
+
 
     public GameService() {
         this.fullSet = new ArrayList<>();
