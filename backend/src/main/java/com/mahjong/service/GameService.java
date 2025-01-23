@@ -63,7 +63,7 @@ public class GameService {
             return drawTile();
         } else {
             currentHand.add(tile);
-            checkDiscard = false;
+            this.checkDiscard = false;
             return tile;
         }
     }
@@ -71,7 +71,7 @@ public class GameService {
     public void discard(int tileIndex) {
         if (tileIndex >= 0 && tileIndex < currentHand.size()) {
             currentHand.remove(tileIndex);
-            checkDiscard = true;
+            this.checkDiscard = true;
         } else {
             throw new IllegalArgumentException("Invalid tile index");
         }
