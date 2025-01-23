@@ -7,7 +7,27 @@ const CurrentHand = () => {
   const [combiSets, setCombiSets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
-  const [checkdiscard, setDiscard] = useState(false);
+  const [checkdiscard, setDiscard] = useState();
+
+  const start = async () => {
+    try {
+      axios.post("https://mahjong-5ztb.onrender.com/api/game/start");
+      await getHand();
+      await getCombiSets();
+    } catch (error) {
+      console.error("Error starting", error);
+    }
+  };
+
+  const reset = async () => {
+    try {
+      axios.post("https://mahjong-5ztb.onrender.com/api/game/reset");
+      await getHand();
+      await getCombiSets();
+    } catch (error) {
+      console.error("Error reseting", error);
+    }
+  };
 
   const getHand = async () => {
     try {
@@ -39,6 +59,7 @@ const CurrentHand = () => {
         "https://mahjong-5ztb.onrender.com/api/game/sort"
       );
       setHand(response.data);
+      console.log(checkdiscard);
     } catch (error) {
       console.error("Error sorting hand:", error);
     }
@@ -46,15 +67,17 @@ const CurrentHand = () => {
 
   const drawTile = async () => {
     try {
-      const response = await checkDiscard();
-      setDiscard(response);
+      await axios.post("https://mahjong-5ztb.onrender.com/api/game/draw");
 
-      if (!response.data) {
+      const response = await checkDiscard();
+      setDiscard(response.data);
+      console.log(response.data);
+
+      if (response.data) {
         alert("You must discard a tile before drawing!");
         return;
       }
 
-      await axios.post("https://mahjong-5ztb.onrender.com/api/game/draw");
       await getHand();
     } catch (error) {
       console.error("Error drawing tile:", error);
@@ -63,17 +86,19 @@ const CurrentHand = () => {
 
   const discardTile = async (index) => {
     try {
-      const response = await checkDiscard();
-      setDiscard(response);
+      await axios.post(
+        `https://mahjong-5ztb.onrender.com/api/game/discard/${index}`
+      );
 
-      if (response.data) {
+      const response = await checkDiscard();
+      setDiscard(response.data);
+      console.log(!response.data);
+
+      if (!response.data) {
         alert("You must draw a tile before discarding!");
         return;
       }
 
-      await axios.post(
-        `https://mahjong-5ztb.onrender.com/api/game/discard/${index}`
-      );
       await getHand();
       setSelectedTiles([]);
     } catch (error) {
@@ -84,7 +109,7 @@ const CurrentHand = () => {
   const checkDiscard = async () => {
     try {
       return axios.get(
-        "https://mahjong-5ztb.onrender.com/api/game/checkdiscard/"
+        "https://mahjong-5ztb.onrender.com/api/game/checkdiscard"
       );
     } catch (error) {
       console.error("Error retrieving discard boolean", error);
@@ -136,6 +161,12 @@ const CurrentHand = () => {
   useEffect(() => {
     getHand();
     getCombiSets();
+    const checkInitialState = async () => {
+      const response = await checkDiscard();
+      console.log("Initial checkDiscard state:", response.data);
+      setDiscard(response.data);
+    };
+    checkInitialState();
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -145,6 +176,19 @@ const CurrentHand = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Current Hand</h2>
         <div className="space-x-2">
+          <button
+            onClick={start}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Start Game
+          </button>
+
+          <button
+            onClick={reset}
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+          >
+            Reset Game
+          </button>
           <button
             onClick={sortHand}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
