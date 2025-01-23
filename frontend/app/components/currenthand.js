@@ -153,9 +153,9 @@ const CurrentHand = () => {
           </button>
           <button
             onClick={drawTile}
-            disabled={!checkDiscard}
+            disabled={!checkdiscard}
             className={`px-4 py-2 ${
-              !checkDiscard
+              !checkdiscard
                 ? "bg-green-500 hover:bg-green-600 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
@@ -166,9 +166,9 @@ const CurrentHand = () => {
             onClick={() =>
               selectedTiles.length === 1 && discardTile(selectedTiles[0])
             }
-            disabled={checkDiscard}
+            disabled={checkdiscard}
             className={`px-4 py-2 rounded ${
-              checkDiscard
+              checkdiscard
                 ? "bg-red-500 hover:bg-red-600 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
             }`}
