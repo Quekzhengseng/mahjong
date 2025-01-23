@@ -20,6 +20,7 @@ public class GameService {
     
     @Autowired
     private HandChecker handChecker;
+    private boolean gameStarted = false;
 
     public GameService() {
         this.fullSet = new ArrayList<>();
@@ -27,7 +28,22 @@ public class GameService {
         this.specialHand = new ArrayList<>();
         this.submittedHand = new ArrayList<>();
         this.checkDiscard = false;
+    }
+
+    public void startGame() {
+    if (!gameStarted) {
         initializeAllTiles();
+        gameStarted = true;
+        }
+    }
+
+    public void resetGame() {
+        fullSet.clear();
+        currentHand.clear();
+        specialHand.clear();
+        submittedHand.clear();
+        checkDiscard = false;
+        gameStarted = false;
     }
 
     private void initializeAllTiles() {

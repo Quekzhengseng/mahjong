@@ -17,6 +17,16 @@ public class GameController {
     @Autowired
     private GameService gameService;
 
+    @PostMapping("/start")
+    public void startGame() {
+        gameService.startGame();
+    }
+
+    @PostMapping("/reset")
+    public void resetGame() {
+        gameService.resetGame();
+    }
+
     @PostMapping("/draw")
     public Tile drawTile() {
         return gameService.drawTile();
