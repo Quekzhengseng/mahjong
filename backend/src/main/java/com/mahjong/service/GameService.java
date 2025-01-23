@@ -78,6 +78,7 @@ public class GameService {
     }
 
     public boolean returnDiscard() {
+        System.out.println("Current checkDiscard value: " + checkDiscard); // Add this
         return this.checkDiscard;
     }
 
@@ -146,9 +147,5 @@ public class GameService {
 
     public List<Tile> getSpecialHand() {
         return new ArrayList<>(specialHand);
-    }
-
-    public boolean isCheckDiscard() {
-        return checkDiscard;
     }
 }
