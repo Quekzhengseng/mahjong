@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 const CurrentHand = () => {
   const [hand, setHand] = useState([]);
@@ -161,14 +162,18 @@ const CurrentHand = () => {
 
   const setupWebSocket = () => {
     const client = new Client({
-      brokerURL: "wss://mahjong-5ztb.onrender.com/ws",
+      webSocketFactory: () => new SockJS("https://mahjong-5ztb.onrender.com/ws"),
       onConnect: () => {
+        console.log("Connected!");
         client.subscribe("/topic/game-state", (message) => {
           const gameState = JSON.parse(message.body);
           setHand(gameState.currentHand);
           setCombiSets(gameState.submittedHand);
         });
       },
+      onDisconnect: () => console.log("Disconnected!"),
+      onWebSocketError: (e) => console.error("WebSocket Error:", e),
+      debug: console.log,
     });
 
     client.activate();
