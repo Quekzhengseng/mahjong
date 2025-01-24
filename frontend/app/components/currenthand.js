@@ -162,7 +162,10 @@ const CurrentHand = () => {
 
   const setupWebSocket = () => {
     const client = new Client({
-      webSocketFactory: () => new SockJS("https://mahjong-5ztb.onrender.com/ws"),
+      webSocketFactory: () =>
+        new SockJS("https://mahjong-5ztb.onrender.com/ws"),
+      heartbeatIncoming: 4000,
+      heartbeatOutgoing: 4000,
       onConnect: () => {
         console.log("Connected!");
         client.subscribe("/topic/game-state", (message) => {
