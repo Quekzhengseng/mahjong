@@ -161,7 +161,7 @@ const CurrentHand = () => {
 
   const setupWebSocket = () => {
     const client = new Client({
-      brokerURL: "ws://mahjong-5ztb.onrender.com/ws",
+      brokerURL: "wss://mahjong-5ztb.onrender.com/ws",
       onConnect: () => {
         client.subscribe("/topic/game-state", (message) => {
           const gameState = JSON.parse(message.body);
@@ -174,7 +174,6 @@ const CurrentHand = () => {
     client.activate();
     return client;
   };
-
 
   useEffect(() => {
     getHand();
@@ -190,7 +189,6 @@ const CurrentHand = () => {
 
     const client = setupWebSocket();
     return () => client.deactivate();
-
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
