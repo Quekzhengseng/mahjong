@@ -18,6 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-            .setAllowedOrigins("https://mahjong-psi.vercel.app", "http://localhost:3000");
+            .setAllowedOrigins("https://mahjong-psi.vercel.app", "http://localhost:3000")
+            .setPort(Integer.parseInt(System.getenv("port")));;
     }
 }
