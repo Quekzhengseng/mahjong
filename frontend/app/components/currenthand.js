@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Client } from "@stomp/stompjs";
 
 const CurrentHand = () => {
   const [hand, setHand] = useState([]);
@@ -158,15 +159,38 @@ const CurrentHand = () => {
     }
   };
 
+  const setupWebSocket = () => {
+    const client = new Client({
+      brokerURL: "ws://mahjong-5ztb.onrender.com/ws",
+      onConnect: () => {
+        client.subscribe("/topic/game-state", (message) => {
+          const gameState = JSON.parse(message.body);
+          setHand(gameState.currentHand);
+          setCombiSets(gameState.submittedHand);
+        });
+      },
+    });
+
+    client.activate();
+    return client;
+  };
+
+
   useEffect(() => {
     getHand();
     getCombiSets();
+
     const checkInitialState = async () => {
       const response = await checkDiscard();
       console.log("Initial checkDiscard state:", response.data);
       setDiscard(response.data);
     };
+
     checkInitialState();
+
+    const client = setupWebSocket();
+    return () => client.deactivate();
+
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
