@@ -19,8 +19,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
             .setAllowedOrigins("https://mahjong-psi.vercel.app", "http://localhost:3000")
-            .setAllowedOriginPatterns("*")
-            .setHandshakeHandler(new DefaultHandshakeHandler())
-            .withSockJS();
+            .withSockJS()
+            .setWebSocketEnabled(true)
+            .setHeartbeatTime(25000)
+            .setDisconnectDelay(5000);
     }
 }

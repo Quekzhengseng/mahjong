@@ -12,7 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000", "https://mahjong-psi.vercel.app")  
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .withSockJS();
     }
 }
 
