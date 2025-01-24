@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.util.*;
+import com.mahjong.model.GameState;
 
 @Service
 public class GameService {
