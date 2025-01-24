@@ -63,7 +63,7 @@
 		<dependency>
         	<groupId>org.springframework.boot</groupId>
         	<artifactId>spring-boot-starter-messaging</artifactId>
-			<version>6.2.0</version>
+			<version>3.4.2</version>
     	</dependency>
 	</dependencies>
 
