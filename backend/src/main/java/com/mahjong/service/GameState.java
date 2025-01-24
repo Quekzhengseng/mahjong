@@ -3,22 +3,14 @@ package com.mahjong.model;
 import java.util.List;
 
 public class GameState {
-    private String type;
+    private List<Tile> specialHand;
     private List<Tile> currentHand;
     private List<List<Tile>> submittedHand;
 
-    public GameState(String type, List<Tile> currentHand, List<List<Tile>> submittedHand) {
+    public GameState(List<Tile> currentHand, List<List<Tile>> submittedHand, List<Tile> specialHand) {
         this.type = type;
         this.currentHand = currentHand;
         this.submittedHand = submittedHand;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public List<Tile> getCurrentHand() {
@@ -35,5 +27,13 @@ public class GameState {
 
     public void setSubmittedHand(List<List<Tile>> submittedHand) {
         this.submittedHand = submittedHand;
+    }
+
+    public List<Tile> getSpecialHand() {
+        return specialHand;
+    }
+
+    public void setSpecialHand(List<Tile> specialHand) {
+        this.specialHand = specialHand;
     }
 }
