@@ -3,6 +3,7 @@ package com.mahjong.service;
 import com.mahjong.model.Tile;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import java.util.*;
 
 @Service
@@ -13,7 +14,7 @@ public class GameService {
     private final List<Tile> specialHand;
     private boolean checkDiscard;
     private boolean gameStarted = false;
-    
+
     private static final List<String> NORMAL_TILESETS = Arrays.asList("Bamboo", "Character", "Circle");
     private static final List<String> SPECIAL_TILESETS = Arrays.asList(
         "Red", "Green", "White", "Flower", "Season", "North", "South", "East", "West"
@@ -21,7 +22,13 @@ public class GameService {
     
     @Autowired
     private HandChecker handChecker;
+    private SimpMessagingTemplate messagingTemplate;
 
+    // After any game state change:
+    private void broadcastGameState() {
+        GameState state = new GameState(currentHand, submittedHand, specialHand);
+        messagingTemplate.convertAndSend("/topic/game-state", state);
+    }
 
     public GameService() {
         this.fullSet = new ArrayList<>();
