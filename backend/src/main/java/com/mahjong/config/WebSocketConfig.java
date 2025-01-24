@@ -23,11 +23,4 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             .setHandshakeHandler(new DefaultHandshakeHandler())
             .withSockJS();
     }
-
-    @Override
-    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(8192)
-                   .setSendBufferSizeLimit(8192)
-                   .setSendTimeLimit(20000);
-    }
 }
