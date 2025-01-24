@@ -8,7 +8,7 @@ public class GameState {
     private List<List<Tile>> submittedHand;
 
     public GameState(List<Tile> currentHand, List<List<Tile>> submittedHand, List<Tile> specialHand) {
-        this.type = type;
+        this.specialHand = specialHand;
         this.currentHand = currentHand;
         this.submittedHand = submittedHand;
     }
