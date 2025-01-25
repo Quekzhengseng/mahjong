@@ -5,8 +5,6 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -25,14 +23,3 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 }
 
-@Configuration
-public class WebConfig implements WebMvcConfigurer {
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000", "https://mahjong-psi.vercel.app")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-            .allowedHeaders("*")
-            .allowCredentials(true);
-    }
-}
