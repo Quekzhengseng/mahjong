@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-
 @RestController
 @RequestMapping("/api/game")
 public class GameController {
@@ -81,9 +78,4 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
 
-    @MessageMapping("/game")
-    @SendTo("/topic/game-state")
-    public GameState handleGameUpdate(GameState gameState) {
-        return gameState;
-    }
 }
