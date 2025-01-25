@@ -5,7 +5,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.springframework.stereotype.Component;
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 
 @Component
 public class WebSocketServer {
@@ -17,12 +17,13 @@ public class WebSocketServer {
         connector.setPort(80);
         server.addConnector(connector);
         
-        WebSocketHandler wsHandler = new WebSocketHandler() {
-            @Override
-            public void configure(WebSocketServletFactory factory) {
-                factory.register(GameWebSocketHandler.class);
-            }
-        };
+    WebSocketHandler wsHandler = new WebSocketHandler() {
+        @Override
+        public void configure(WebSocketServletFactory factory) {
+            factory.register(GameWebSocketHandler.class);
+            factory.getPolicy().setIdleTimeout(10000);
+        }
+    };
         
         server.setHandler(wsHandler);
     }
