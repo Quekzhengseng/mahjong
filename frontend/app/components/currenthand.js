@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Client } from "@stomp/stompjs";
-import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
 
 const CurrentHand = () => {
   const [hand, setHand] = useState([]);
@@ -10,6 +9,9 @@ const CurrentHand = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedTiles, setSelectedTiles] = useState([]);
   const [checkdiscard, setDiscard] = useState();
+  const [socket, setSocket] = useState(null);
+  const [wsMessages, setWsMessages] = useState([]);
+  const [isWsConnected, setIsWsConnected] = useState(false);
 
   const start = async () => {
     try {
@@ -160,32 +162,58 @@ const CurrentHand = () => {
     }
   };
 
-  const setupWebSocket = () => {
-    const client = new Client({
-      webSocketFactory: () =>
-        new SockJS("https://mahjong-5ztb.onrender.com/ws"),
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      onConnect: () => {
-        console.log("Connected!");
-        client.subscribe("/topic/game-state", (message) => {
-          const gameState = JSON.parse(message.body);
-          setHand(gameState.currentHand);
-          setCombiSets(gameState.submittedHand);
-        });
-      },
-      onDisconnect: () => console.log("Disconnected!"),
-      onWebSocketError: (e) => console.error("WebSocket Error:", e),
-      debug: console.log,
-    });
+  const connectWebSocket = () => {
+    // Use your actual WebSocket URL
+    const ws = new WebSocket("ws://localhost:8080/ws");
+    const stompClient = Stomp.over(ws);
 
-    client.activate();
-    return client;
+    stompClient.connect(
+      {},
+      (frame) => {
+        console.log("WebSocket Connected: " + frame);
+        setIsWsConnected(true);
+
+        // Subscribe to game-related topics
+        const subscription = stompClient.subscribe(
+          "/topic/game-updates",
+          (message) => {
+            setWsMessages((prev) => [...prev, message.body]);
+          }
+        );
+      },
+      (error) => {
+        console.error("WebSocket Connection error:", error);
+        setIsWsConnected(false);
+      }
+    );
+
+    setSocket(stompClient);
+  };
+
+  const sendWebSocketMessage = () => {
+    if (socket && socket.connected) {
+      socket.send(
+        "/app/game",
+        {},
+        JSON.stringify({
+          type: "TEST_MESSAGE",
+          content: "Hello from Mahjong React Client!",
+        })
+      );
+    }
+  };
+
+  const disconnectWebSocket = () => {
+    if (socket) {
+      socket.disconnect();
+      setIsWsConnected(false);
+    }
   };
 
   useEffect(() => {
     getHand();
     getCombiSets();
+    connectWebSocket();
 
     const checkInitialState = async () => {
       const response = await checkDiscard();
@@ -195,8 +223,10 @@ const CurrentHand = () => {
 
     checkInitialState();
 
-    const client = setupWebSocket();
-    return () => client.deactivate();
+    // Cleanup WebSocket on component unmount
+    return () => {
+      disconnectWebSocket();
+    };
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
@@ -206,6 +236,40 @@ const CurrentHand = () => {
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Current Hand</h2>
         <div className="space-x-2">
+          <button
+            onClick={connectWebSocket}
+            disabled={isWsConnected}
+            className={`px-4 py-2 rounded ${
+              !isWsConnected
+                ? "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Connect WS
+          </button>
+          <button
+            onClick={sendWebSocketMessage}
+            disabled={!isWsConnected}
+            className={`px-4 py-2 rounded ${
+              isWsConnected
+                ? "bg-blue-500 hover:bg-blue-600 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Send Test Message
+          </button>
+          <button
+            onClick={disconnectWebSocket}
+            disabled={!isWsConnected}
+            className={`px-4 py-2 rounded ${
+              isWsConnected
+                ? "bg-red-500 hover:bg-red-600 text-white"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            Disconnect WS
+          </button>
+
           <button
             onClick={start}
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -262,6 +326,21 @@ const CurrentHand = () => {
             Submit Combi Set
           </button>
         </div>
+      </div>
+
+      <div className="bg-gray-100 p-4 rounded">
+        <h4 className="font-semibold mb-2">WebSocket Messages:</h4>
+        {wsMessages.length === 0 ? (
+          <p className="text-gray-500">No messages received</p>
+        ) : (
+          <ul className="space-y-2">
+            {wsMessages.map((msg, index) => (
+              <li key={index} className="bg-white p-2 rounded shadow-sm">
+                {msg}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="mb-8">
