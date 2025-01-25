@@ -1,6 +1,7 @@
 // src/main/java/com/mahjong/controller/GameController.java
 package com.mahjong.controller;
 
+import com.mahjong.model.GameState;
 import com.mahjong.model.Tile;
 import com.mahjong.service.GameService;
 import org.springframework.web.bind.annotation.*;
@@ -77,5 +78,11 @@ public class GameController {
     @RequestMapping(value = "/health", method = RequestMethod.HEAD)
     public ResponseEntity<?> healthCheck() {
         return ResponseEntity.ok().build();
+    }
+
+    @MessageMapping("/game")
+    @SendTo("/topic/game-state")
+    public GameState handleGameUpdate(GameState gameState) {
+        return gameState;
     }
 }
