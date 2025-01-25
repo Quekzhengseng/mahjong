@@ -23,6 +23,8 @@ public class GameService {
     
     @Autowired
     private HandChecker handChecker;
+    
+    @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
     // After any game state change:
@@ -40,9 +42,10 @@ public class GameService {
     }
 
     public void startGame() {
-    if (!gameStarted) {
-        initializeAllTiles();
-        gameStarted = true;
+        if (!gameStarted) {
+            initializeAllTiles();
+            gameStarted = true;
+            broadcastGameState(); // Broadcast initial game state
         }
     }
 
@@ -53,6 +56,7 @@ public class GameService {
         submittedHand.clear();
         checkDiscard = false;
         gameStarted = false;
+        broadcastGameState(); // Broadcast reset game state
     }
 
     private void initializeAllTiles() {
@@ -78,6 +82,7 @@ public class GameService {
         }
 
         this.checkDiscard = true;
+        broadcastGameState(); // Broadcast game state after initialization
     }
 
     public Tile drawTile() {
@@ -91,6 +96,7 @@ public class GameService {
         } else {
             currentHand.add(tile);
             this.checkDiscard = false;
+            broadcastGameState(); // Broadcast game state after drawing a tile
             return tile;
         }
     }
@@ -99,6 +105,7 @@ public class GameService {
         if (tileIndex >= 0 && tileIndex < currentHand.size()) {
             currentHand.remove(tileIndex);
             this.checkDiscard = true;
+            broadcastGameState(); // Broadcast game state after discarding a tile
         } else {
             throw new IllegalArgumentException("Invalid tile index");
         }
@@ -128,6 +135,7 @@ public class GameService {
             tileIndices.stream()
                 .sorted(Collections.reverseOrder())
                 .forEach(i -> currentHand.remove((int) i));
+            broadcastGameState(); // Broadcast game state after adding a combi set
             return true;
         }
 
@@ -140,6 +148,7 @@ public class GameService {
         for (Tile tile : combiset) {
             currentHand.add(tile);
         }
+        broadcastGameState(); // Broadcast game state after removing a combi set
     }
 
     public void sortHand() {
@@ -161,6 +170,7 @@ public class GameService {
             return suitCompare != 0 ? suitCompare : 
                 Integer.compare(tile1.getTileNumber(), tile2.getTileNumber());
         });
+        broadcastGameState(); // Broadcast game state after sorting the hand
     }
 
     // Getters
