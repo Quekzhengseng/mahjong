@@ -8,6 +8,10 @@ import lombok.AllArgsConstructor;
 public class Tile {
     private int tileNumber;
     private String suit;
+
+    // No-argument constructor
+    public Tile() {
+    }
     
     // Add getters if not using Lombok
     public int getTileNumber() {
